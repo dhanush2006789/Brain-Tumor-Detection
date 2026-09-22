@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Image Segmentation</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-bg: #f9f9f9;
+            --dark-bg: #34495e;
+            --text-color: #333;
+            --light-text: #f9f9f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Opening page */
+        .opening-page {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+        }
+
+        .opening-page h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .opening-page p {
+            font-size: 1.5rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .start-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            text-align: center;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            color: var(--light-text);
+        }
+
+        .hero-content {
+            max-width: 400px;
+        }
+
+        .hero-image {
+            margin-top: 2rem;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Info Section */
+        /* .info-section {
+            padding: 3rem 1rem;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                        url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .info-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .info-grid.two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        } */
+        /* Info Section */
+        .info-section {
+            padding: 3rem 1rem;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                    url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Default grid for first row - auto-fit cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Two-column grid for second row */
+        .info-grid.two-columns {
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        /* Cards styling */
+        .info-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive: stack two-columns on smaller screens */
+        @media (max-width: 768px) {
+        .info-grid.two-columns {
+            grid-template-columns: 1fr;
+        }
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: 3rem 1rem;
+            text-align: center;
+            background: linear-gradient(rgba(249, 249, 249, 0.9), rgba(249, 249, 249, 0.9)), 
+                        url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .upload-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 2rem;
+            display: none;
+            background: linear-gradient(rgba(249, 249, 249, 0.9), rgba(249, 249, 249, 0.9)), 
+                        url('https://img.freepik.com/premium-photo/cuttingedge-aipowered-medical-imaging-system-analyzing-xrays-mri-scans-early-detection_891336-21402.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            width: auto;
+            height: auto;
+            max-width: 550px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: -webkit-left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease-in-out;
+        }
+        .result-card img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .result-card:hover {
+            transform: scale(1.03);
+        }
+
+        .result-image {
+            width: auto;
+            height: auto;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 4px;
+            margin-bottom:0 auto 1rem auto;
+        }
+
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Loader */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 40px;
+            height: 40px;
+            margin: 1rem auto;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            }
+            .result-card {
+                width: auto;
+                height: auto;
+            }
+
+            .result-image {
+                height: 70%;
+            }
+
+            .opening-page h1 {
+                font-size: 3rem;
+            }
+
+            .opening-page p {
+                font-size: 1.2rem;
+            }
+            .accuracy-box {
+                display: flex;
+                justify-content: space-evenly;
+                margin-top: 50px;
+                padding: 50px;
+                background: #f8f9fa;
+                border-radius: 12px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+
+                .accuracy-box h4 {
+                margin-bottom: 8px;
+                font-size: 18px;
+                color: #333;
+                }
+
+                .accuracy-box p {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 0;
+                color: #555;
+                }
+                .results-container {
+                    width: 90%;
+                    margin: 0 auto;
+                    font-family: Arial, sans-serif;
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    /* flex-wrap: nowrap; */
+                    gap: 1rem;
+                    margin-top: 2rem;
+                } 
+
+                    /* First row: center the original image */
+                    .original-row {
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 40px; /* space between rows */
+                    }
+
+                    .original-card {
+                    max-width: 400px; /* adjust as needed */
+                    text-align: center;
+                    }
+
+                    /* Second row: side by side segmented images */
+                    .segmented-row {
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 40px; /* space between U-Net and SegNet cards */
+                    }
+
+                    .segmented-card {
+                    flex: 1; /* take equal width */
+                    max-width: 400px; /* optional max width */
+                    text-align: center;
+                    }
+
+                    /* Image styling */
+                    .image-container img {
+                    width: 100%;
+                    height: auto;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                    }
+
+                    /* Accuracy text styling */
+                    .accuracy {
+                    margin-top: 10px;
+                    font-weight: bold;
+                    color: #333;
+                    }
+                    .image-center {
+                    text-align: center;
+                    }
+
+    </style>
+</head>
+<body>
+    <!-- Opening/Title Page -->
+    <div id="opening-page" class="opening-page">
+        <h1>IMAGE SEGMENTATION</h1>
+        <button id="start-btn" class="start-btn">Get Started</button>
+    </div>
+
+    <!-- Main Content (initially hidden) -->
+    <div id="main-content" class="main-content">
+        <header>
+            <div class="container">
+                <h1>Medical Image Segmentation Platform</h1>
+            </div>
+        </header>
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2>Revolutionizing Medical Diagnostics</h2>
+                <p>Our state-of-the-art image segmentation technology helps medical professionals identify and analyze regions of interest with unprecedented accuracy.</p>
+            </div>
+            <img src="https://www.massgeneralbrigham.org/content/mgb-global/global/en/about/newsroom/articles/signs-and-symptoms-of-brain-tumor/_jcr_content/root/container_1214295969_1046759292/image.coreimg.jpeg/1684269164484/reading-mri-scans-2120x1160.jpeg" alt="Medical Image Segmentation Example" width="500" height="300">
+        </section>
+
+        <section class="info-section">
+            <div class="container">
+                <h2>About Medical Image Segmentation</h2>
+                <p>Image segmentation in the medical field involves partitioning medical images into multiple segments or regions to identify objects and boundaries, enabling detailed analysis of anatomical structures.</p>
+<!--                 
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Clinical Applications</h3>
+                        <p>Medical image segmentation is crucial for disease diagnosis, treatment planning, and surgical navigation. It's widely used in radiology, oncology, cardiology, and neurology.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Segmentation Techniques</h3>
+                        <p>Our platform employs advanced deep learning models including U-Net, SegNet, and transformer-based architectures to achieve high-precision segmentation across different imaging modalities.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Supported Modalities</h3>
+                        <p>We support various medical imaging modalities including MRI, CT scans, X-rays, ultrasound, and microscopy images, providing versatile analysis capabilities.</p>
+                    </div>
+                     <div class="info-grid two-columns">
+                    <div class="info-card">
+                        <h3>U-Net</h3>
+                        <p>U-Net is a convolutional neural network designed for biomedical image segmentation, featuring an encoder-decoder structure that captures context and enables precise localization.</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>SegNet</h3>
+                        <p>SegNet uses an encoder-decoder architecture with pooling indices for efficient segmentation, providing accurate pixel-wise classification with reduced computational cost.</p>
+                    </div>
+                </div>
+            </div> -->
+            <div class="info-section">
+
+  <!-- First row: three info cards -->
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>Clinical Applications</h3>
+      <p>Medical image segmentation is crucial for disease diagnosis, treatment planning, and surgical navigation. It's widely used in radiology, oncology, cardiology, and neurology.</p>
+    </div>
+    <div class="info-card">
+            <h3>Segmentation Techniques</h3>
+            <p>Our platform employs advanced ML models including U-Net, SegNet, and transformer-based architectures to achieve high-precision segmentation across different imaging modalities.</p>
+            </div>
+            <div class="info-card">
+            <h3>Supported Modalities</h3>
+            <p>We support  MRI scans and provide versatile analysis capabilities.</p>
+            </div>
+        </div>
+
+        <!-- Second row: U-Net and SegNet side by side -->
+        <div class="info-grid two-columns">
+            <div class="info-card">
+            <h3>U-Net</h3>
+            <p>U-Net is a convolutional neural network designed for biomedical image segmentation, featuring an encoder-decoder structure that captures context and enables precise localization.</p>
+            </div>
+            <div class="info-card">
+            <h3>SegNet</h3>
+            <p>SegNet uses an encoder-decoder architecture with pooling indices for efficient segmentation, providing accurate pixel-wise classification with reduced computational cost.</p>
+            </div>
+        </div>
+
+        </div>
+
+        </section>
+
+        <section id="upload-section" class="upload-section">
+            <div class="container">
+                <p>Upload your medical image.</p>
+                
+                <div class="upload-container">
+                    <div id="upload-area" class="upload-area">
+                        <div class="upload-icon">📁</div>
+                        <h3>Upload Medical Image</h3>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <input type="file" id="file-input" class="file-input" accept="image/*">
+                    </div>
+                    <button id="process-btn" class="btn" disabled>Process Image</button>
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Processing your image. This may take a moment...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="results-section" class="results-section">
+            <div class="container">
+                <h2>Segmentation Results</h2>
+                <p>Below are the results of the image segmentation process and analysis metrics.</p>
+                    <div class="results-container">
+
+                <!-- First row: Original image centered -->
+                <div class="row original-row">
+                    <div class="result-card original-card">
+                    <h3>Original Image</h3>
+                    <div class="image-container">
+                        <img id="original-image" src="{{ url_for('serve_output', filename='input_image.png') }}" alt="Original Image">
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Second row: U-Net and SegNet side by side -->
+                <div class="row segmented-row">
+                    <div class="result-card segmented-card">
+                    <h3>U-Net Output</h3>
+                    <div class="image-container">
+                        <img id="unet-result" src="outputs/unet_output.png" alt="U-Net Result">
+                    </div>
+                    <div class="accuracy" id="unet-accuracy">Accuracy : --%</div>
+                    </div>
+
+                    <div class="result-card segmented-card">
+                    <h3>SegNet Output</h3>
+                    <div class="image-container">
+                        <img id="segnet-result" src="outputs/segnet_output.png" alt="SegNet Result">
+                    </div>
+                    <div class="accuracy" id="segnet-accuracy">Accuracy : --%</div>
+                    </div>
+                </div>
+
+                </div>
+
+            </div>
+            <h2>Accuracy Graph</h2>
+            <div class="image-center">
+                 <img src="{{ url_for('accuracy_plot') }}" alt="Accuracy Graph" />
+            </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2025 Medical Image Segmentation Platform. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const openingPage = document.getElementById('opening-page');
+            const mainContent = document.getElementById('main-content');
+            const startBtn = document.getElementById('start-btn');
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const processBtn = document.getElementById('process-btn');
+            const loadingDiv = document.getElementById('loading');
+            const resultsSection = document.getElementById('results-section');
+            const originalImage = document.getElementById('original-image');
+            const segmentedImage = document.getElementById('segmented-image');
+            
+            // Metrics elements
+            const diceScore = document.getElementById('dice-score');
+            const jaccardScore = document.getElementById('jaccard-score');
+            const sensitivityScore = document.getElementById('sensitivity-score');
+            const specificityScore = document.getElementById('specificity-score');
+            const processingTime = document.getElementById('processing-time');
+            
+            // Start button click event
+            startBtn.addEventListener('click', function() {
+                openingPage.style.display = 'none';
+                mainContent.style.display = 'block';
+                window.scrollTo(0, 0);
+            });
+            
+            // Handle click on upload area
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                uploadArea.classList.add('highlight');
+            }
+            
+            function unhighlight() {
+                uploadArea.classList.remove('highlight');
+            }
+            
+            // Handle file drop
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                handleFiles(files);
+            }
+            
+            // Handle file selection via input
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+            
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.match('image.*')) {
+                        uploadArea.innerHTML = `<p>File selected: ${file.name}</p>`;
+                        processBtn.disabled = false;
+                        
+                        // Display the original image preview
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            originalImage.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert('Please upload an image file.');
+                        resetUploadArea();
+                    }
+                }
+            }
+            
+            function resetUploadArea() {
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">📁</div>
+                    <h3>Upload Medical Image</h3>
+                    <p>Drag & drop your file here or click to browse</p>
+                `;
+                fileInput.value = '';
+                processBtn.disabled = true;
+            }
+            
+            // Process image button click
+            processBtn.addEventListener('click', function () {
+    if (!fileInput.files.length) return alert("Please select an image!");
+
+    const formData = new FormData();
+    formData.append("image", fileInput.files[0]);
+
+    // Show loading spinner
+    loadingDiv.style.display = 'block';
+
+    fetch("/predict", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Backend response:", data); // Debugging
+
+        loadingDiv.style.display = 'none';
+        resultsSection.style.display = 'block';
+
+        // Scroll to results
+        resultsSection.scrollIntoView({ behavior: "smooth" });
+
+        // Update image sources with cache-busting
+        document.getElementById('original-image').src = data.original + "?t=" + new Date().getTime();
+        document.getElementById('unet-result').src = data.unet_output + "?t=" + new Date().getTime();
+        document.getElementById('segnet-result').src = data.segnet_output + "?t=" + new Date().getTime();
+
+        // Fake metrics just for UI (replace with real values from backend later)
+        // diceScore.textContent = (Math.random() * 0.3 + 0.7).toFixed(4);
+        // jaccardScore.textContent = (Math.random() * 0.3 + 0.6).toFixed(4);
+        // sensitivityScore.textContent = (Math.random() * 0.2 + 0.75).toFixed(4);
+        // specificityScore.textContent = (Math.random() * 0.1 + 0.85).toFixed(4);
+        // processingTime.textContent = (Math.random() * 2 + 1).toFixed(2) + ' seconds';
+
+        document.getElementById('unet-accuracy').textContent = `UNet Accuracy: ${(data.unet_acc).toFixed(2)}%`;
+        document.getElementById('segnet-accuracy').textContent = `SegNet Accuracy: ${(data.segnet_acc).toFixed(2)}%`;
+    })
+    .catch(err => {
+        loadingDiv.style.display = 'none';
+        console.error("Prediction error:", err);
+ //       alert("Prediction failed.");
+    });
+});
+         document.getElementById('uploadForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('original-image').src = data.original;
+                document.getElementById('segnet-result').src = data.segnet;
+                document.getElementById('unet-result').src = data.unet;
+            })
+            .catch(err => console.error('Prediction error:', err));
+        });
+    });
+
+        document.getElementById("compareBtn").addEventListener("click", function () {
+        const unetResult = document.getElementById("unet-result").style.display;
+        const segnetResult = document.getElementById("segnet-result").style.display;
+
+        // Show both if any one is hidden
+        document.getElementById("unet-result").style.display = "block";
+        document.getElementById("segnet-result").style.display = "block";
+
+        // Optionally scroll to the comparison section
+        document.getElementById("unet-result").scrollIntoView({ behavior: "smooth" });
+
+        // Optional comparison message
+        const message = document.getElementById("comparison-message");
+        if (!message) {
+            const div = document.createElement("div");
+            div.id = "comparison-message";
+            div.innerHTML = "<h3>Comparing U-Net and SegNet Results</h3><p>Both segmentation results are shown side-by-side for analysis.</p>";
+            div.style.marginTop = "20px";
+            document.querySelector(".container").appendChild(div);
+        }
+    });
+    const form = document.getElementById('upload-form');
+        form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const response = await fetch('/predict', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+        if (data.unet_output && data.segnet_output) {
+            document.getElementById('unet-output').src = data.unet_output;
+            document.getElementById('segnet-output').src = data.segnet_output;
+        } else {
+            alert('Prediction error: ' + JSON.stringify(data));
+        }
+        });
+    </script>
+</body>
+</html>
