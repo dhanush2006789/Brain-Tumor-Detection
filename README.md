@@ -54,3 +54,42 @@ Bottleneck
 Decoder
      ↓
 Segmentation Mask
+
+2. SegNet
+SegNet is a deep learning architecture designed for semantic image segmentation.
+
+It uses an encoder-decoder architecture to perform pixel-level classification and generate the final segmentation mask.
+
+Input MRI Image
+       ↓
+    Encoder
+       ↓
+Feature Extraction
+       ↓
+    Decoder
+       ↓
+Pixel-Level Prediction
+       ↓
+Tumor Segmentation Mask
+
+3 System Workflow
+             Brain MRI Image
+                    ↓
+             Image Preprocessing
+                    ↓
+             Resize / Normalize
+                    ↓
+             ┌──────┴──────┐
+             ↓             ↓
+           U-Net         SegNet
+             ↓             ↓
+       Predicted Mask  Predicted Mask
+             ↓             ↓
+             └──────┬──────┘
+                    ↓
+          Segmentation Evaluation
+                    ↓
+             Model Comparison
+                    ↓
+          Final Tumor Visualization
+
